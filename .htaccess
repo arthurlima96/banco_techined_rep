@@ -1,0 +1,23 @@
+RewriteEngine On
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+#codificação UTF-8
+<FilesMatch ".(htm|html|css|js)$">
+AddDefaultCharset UTF-8
+</FilesMatch>
+
+Options -Indexes
+
+
+# Permitir o acesso de todos os domínios para Webfonts.
+# Alternativamente, você só poderia whitelist seu
+# subdomínios como "subdomain.example.com".
+#<IfModule mod_headers.c>
+#<FilesMatch "\.(svg|ttf|otf|eot|woff|woff2)$">
+#    Header set Access-Control-Allow-Origin "*"
+#</FilesMatch>
+#</IfModule> 
