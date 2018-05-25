@@ -104,7 +104,7 @@ class ContaController extends Controller{
 
         $contaDAO->atualizarSaldoEspecial($conta);
     }else{
-        Sessao::gravaMensagem("Valor de saque maior que o saldo especial de R$ 50,00");
+        Sessao::gravaMensagem("Valor de saque maior que o saldo especial");
         $this->redirect('/conta/saque');
     }
     
