@@ -18,7 +18,7 @@ Infraestrutura necessária:
   - Execute ele para criação das  tabelas, no gerenciador de banco de dados de sua preferência
   - Verifique se as tabelas foram criadas
 
-Se for necessario alterar o nome do banco, usuario ou senha. No caminha `bancotechined\App\App.php` abra o arquivo.
+Se for necessario alterar o nome do banco, usuario ou senha. No caminho `bancotechined\App\App.php` abra o arquivo.
 
 ```sh
         define('DB_HOST'        , "localhost");
@@ -29,10 +29,10 @@ Se for necessario alterar o nome do banco, usuario ou senha. No caminha `bancote
 
 Acima é como está definido atualmente, modifique caso necessário.
 # Acesso da aplicação
-Depois de executar a criação do banco e das suas repectivas tabelas, é necessario colocar o projeto na pasta de execução utlizada pelo servidor. acesse no seu navegador `localhost/bancotechined`, verifique se a página foi renderizada.
+Depois de executar a criação do banco e das suas repectivas tabelas, é necessario colocar o projeto na pasta de execução utlizada pelo servidor. Acesse no seu navegador `localhost/bancotechined`, verifique se a página foi renderizada.
 
 -   No primeiro acesso é nessário cadastrar um usuário
--   Em seguida acesse o usuario cadastrado no link de login
+-   Em seguida acesse o usuário cadastrado no link de login
 
 # Requisitos aplicados
 
@@ -100,22 +100,22 @@ Condicional encontra-se no arquivo `bancotechined\App\Controllers\ContaControlle
 ### 7 . Taxa de transferência :
 > Quando acontecer uma transferência de uma conta corrente para uma outra conta corrente ou poupança, deve ser descontado do saldo restante um valor equivalente a 3% do valor transferido.
 
-Tal requisito foi aplicado, onde foi necessario fazer essa verificação, como no exemplo abaixo: 
+Tal requisito foi aplicado, onde foi necessario fazer essa implementação, como no exemplo abaixo: 
 
 ```sh
-    $this->adicionarSaldoDest($contaDest,$valorDest);
+        $this->adicionarSaldoDest($contaDest,$valorDest);
         $contaUser['saldo'] -= $valorDest*0.03;
         $this->subtrairSaldoAtual($contaUser,$valorDest);
 ```
 
-Na condicional acima defini-se a estratégia para saque por meio do  limite especial, além disso foi definido por `default` um valor de R$ 50,00 para efetuar o saque.
+Na condicional acima defini-se a estratégia para saque por meio do  limite especial, além disso foi definido por `default` um valor de R$ 50,00 para efetuar o saque especial.
 
 Condicional encontra-se no arquivo `bancotechined\App\Controllers\ContaController.php` no método `transferir()` ;
 
-### 8 . rendimento programado :
+### 8 . Rendimento programado :
 > Em uma conta poupança deve haver uma taxa de rendimento de 0,5% e uma ação que possa ser invocada para aplicar esse rendimento sobre o saldo em determinados períodos de tempo.
 
-Tal requisito foi aplicado, onde foi necessario fazer essa verificação, como no exemplo abaixo: 
+Tal requisito foi aplicado, onde foi necessario fazer essa implementação, como no exemplo abaixo: 
 
 ```sh
     public function rendimento(){
@@ -145,7 +145,7 @@ Tal requisito foi aplicado, onde foi necessario fazer essa verificação, como n
   }
 ```
 
-No método acima defini-se uma forma programada para o rendimento da poupanção, o rendimento de %0,5 mensalmente, por meio da checagem de um atributo na tabela `Conta` verifica-se de o rendimento está disponivel, lembrando que ele aplica-se somente para Conta Poupança.
+No método acima defini-se uma forma programada para o rendimento da poupança, o rendimento de %0,5 mensalmente, por meio da checagem de um atributo na tabela `Conta` verifica-se se o rendimento está disponivel, lembrando que ele aplica-se somente para Conta Poupança.
 
 ### 9 . Detalhe a mais :
 
