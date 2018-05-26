@@ -10,7 +10,7 @@ Infraestrutura necessária:
 # Configurações para acessar o banco de dados
 É necessario criar uma base da dados `techined_banco`, rodando no servidor localmente, caso não tenha o `PDO` habilitado, siga os passos abaixo:
   - Acessar na servidor o arquivo `php.ini`
-  - Retirar o `;` que está no inicio do parametro `extension=php_mysql.dll`
+  - Retirar o `;` que está no inicio do parametro `extension=php_pdo_mysql.dll`
   - Em seguida reiniciar o servidor
 
 É necessario criar as tabelas no banco de dados:
