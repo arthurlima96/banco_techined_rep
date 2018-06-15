@@ -6,6 +6,9 @@ use App\Lib\Sessao;
 use App\Models\DAO\UsuarioDAO;
 use App\Models\DAO\ContaDAO;
 use App\Models\Entidades\Usuario;
+use App\Models\Entidades\Conta;
+use App\Models\Entidades\ContaCorrente;
+use App\Models\Entidades\ContaPoupanca;
 
 class UsuarioController extends Controller{
    
@@ -33,9 +36,28 @@ class UsuarioController extends Controller{
 
         if($usuarioDAO->salvar($Usuario)){
 
-            $linha = $usuarioDAO->verificaEmail($_POST['email']);
+            $linha_usuario = $usuarioDAO->pegarUsuarioPorEmail($_POST['email']);
+            
             $contaDAO = new ContaDAO();
-            $contaDAO->criar_conta($linha['id'],$_POST['tp_conta']);
+
+            switch ($_POST['tp_conta']) {
+                case 1:
+                    $conta = new ContaCorrente();
+                    break;
+                case 2:
+                    $conta = new ContaPoupanca();
+                    break;
+            }
+
+            $conta->setTitular($linha_usuario['id']);
+            $conta->setTipo($_POST['tp_conta']);
+            
+            $contaDAO->criar_conta($conta);
+
+            $linha_conta = $contaDAO->pegarConta($conta->getTitular());
+            $conta->setId($linha_conta['id']);
+
+            $contaDAO->criarContaPorTipo($conta);
 
             $this->redirect('/usuario/sucesso');
         }else{

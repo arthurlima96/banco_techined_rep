@@ -4,6 +4,8 @@ namespace App\Controllers;
 use App\Lib\Sessao;
 use App\Models\DAO\ContaDAO;
 use App\Models\Entidades\Conta;
+use App\Models\Entidades\ContaCorrente;
+use App\Models\Entidades\ContaPoupanca;
 
 class ContaController extends Controller{
 
@@ -67,8 +69,10 @@ class ContaController extends Controller{
     $linha = $contaDAO->pegarConta(Sessao::retornaId()); 
 
     $conta = new Conta();
-    $conta->setSaldo($linha['saldo'] + $_POST['valor']);
+    $conta->setSaldo($linha['saldo']);
     $conta->setTitular(Sessao::retornaId());
+
+    $conta->depositar($_POST['valor']);
 
     $contaDAO->atualizarSaldo($conta);
 
@@ -89,23 +93,29 @@ class ContaController extends Controller{
 
   public function sacar(){
     $contaDAO = new ContaDAO();
-    $linha = $contaDAO->pegarConta(Sessao::retornaId()); 
+    $linha_conta = $contaDAO->pegarConta(Sessao::retornaId());
 
-    if( $_POST['valor'] <= $linha['saldo']){
-        $conta = new Conta();
-        $conta->setSaldo($linha['saldo'] - $_POST['valor']);
-        $conta->setTitular(Sessao::retornaId());
+    $conta = new Conta(); 
+    $conta->setTitular(Sessao::retornaId());
+    $conta->setSaldo($linha_conta['saldo']);
 
-        $contaDAO->atualizarSaldo($conta);
-    }elseif ($_POST['valor'] <= $linha['limite_especial']) {
-        $conta = new Conta();
-        $conta->setLimite_especial($linha['limite_especial'] - $_POST['valor']);
-        $conta->setTitular(Sessao::retornaId());
+    if($conta->sacar($_POST['valor'])){
+      $contaDAO->atualizarSaldo($conta);
+    }elseif($linha_conta['tipo'] == 1){
 
-        $contaDAO->atualizarSaldoEspecial($conta);
-    }else{
+      $conta_corrente = new ContaCorrente();
+      $linha_conta_corrente = $contaDAO->pegarContaCorrente($linha_conta['id']);
+
+      $conta_corrente->setLimite_Especial($linha_conta_corrente['limite_especial']);
+      $conta_corrente->setConta_Id($linha_conta_corrente['conta_id']);
+      
+      if($conta_corrente->sacarLimiteEspecial($_POST['valor'])){
+        $contaDAO->atualizarSaldoEspecial($conta_corrente);
+      }else{
         Sessao::gravaMensagem("Valor de saque maior que o saldo especial");
         $this->redirect('/conta/saque');
+      }
+      
     }
     
     Sessao::limpaFormulario();

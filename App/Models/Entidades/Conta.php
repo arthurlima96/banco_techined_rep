@@ -10,10 +10,8 @@ class Conta
     private $titular;
     private $saldo;
     private $data_abertura;
-    private $data_rendimento;
     private $tipo;
-    private $limite_especial;
-
+    
     /**
      * Get the value of id
      */ 
@@ -134,63 +132,36 @@ class Conta
         return $this;
     }
 
-    /**
-     * Get the value of tipo
-     */ 
-    public function getTipo()
-    {
+    public function getTipo(){
         return $this->tipo;
     }
 
-    /**
-     * Set the value of tipo
-     *
-     * @return  self
-     */ 
-    public function setTipo($tipo)
-    {
+    public function setTipo($tipo){
         $this->tipo = $tipo;
-
-        return $this;
     }
 
-    /**
-     * Get the value of limite_especial
-     */ 
-    public function getLimite_especial()
+    public function depositar($valor_deposito)
     {
-        return $this->limite_especial;
+        if($valor_deposito > 0)
+            $this->saldo += $valor_deposito;
     }
 
-    /**
-     * Set the value of limite_especial
-     *
-     * @return  self
-     */ 
-    public function setLimite_especial($limite_especial)
-    {
-        $this->limite_especial = $limite_especial;
+    public function sacar($valor_saque){
+        if($valor_saque <= $this->getSaldo()){
+            $this->saldo -= $valor_saque;
 
-        return $this;
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    /**
-     * Get the value of data_rendimento
-     */ 
-    public function getData_rendimento()
-    {
-        return $this->data_rendimento;
+    public function tipoCorrente(){
+        return $this instanceof ContaCorrente;
     }
 
-    /**
-     * Set the value of data_rendimento
-     *
-     * @return  self
-     */ 
-    public function setData_rendimento($data_rendimento)
-    {
-        $this->data_rendimento = $data_rendimento;
-
-        return $this;
+    public function tipoPoupanca(){
+        return $this instanceof ContaCorrente;
     }
+
 }

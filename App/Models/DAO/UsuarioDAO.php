@@ -38,6 +38,10 @@ class UsuarioDAO extends BaseDAO
         }
     }
 
+    public function pegarUsuarioPorEmail($email){
+        return $this->verificaEmail($email);
+    }
+
     public  function salvar(Usuario $usuario) {
         try {
             $nome      = $usuario->getNome();

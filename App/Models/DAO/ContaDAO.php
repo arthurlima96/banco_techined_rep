@@ -3,27 +3,51 @@
 namespace App\Models\DAO;
 
 use App\Models\Entidades\Conta;
+use App\Models\Entidades\ContaCorrente;
+use App\Models\Entidades\ContaPoupanca;
 
 class ContaDAO extends BaseDAO
 {
 
-    public function criar_conta($id_usuario,$tp_conta)
+    public function criar_conta(Conta $conta)
     {
         try {
-            $agencia    = rand(10,10000);
-            $numero     = rand(10,10000);
-            $titular    = $id_usuario;
-            $saldo      = 0.0;
+            $conta->setAgencia(rand(10,10000));
+            $conta->setNumero(rand(10,10000));
+            $conta->setSaldo(0.0);
                                      
             return $this->insert(
                 'conta',
                 ":agencia,:numero,:titular,:saldo,:tipo",
                 [
-                    ':agencia'=>$agencia,
-                    ':numero' =>$numero,
-                    ':titular'=>$titular,
-                    ':saldo'  =>$saldo,
-                    ':tipo'   =>$tp_conta
+                    ':agencia'=>$conta->getAgencia(),
+                    ':numero' =>$conta->getNumero(),
+                    ':titular'=>$conta->getTitular(),
+                    ':saldo'  =>$conta->getSaldo(),
+                    ':tipo'   =>$conta->getTipo()  
+                ]
+            );
+
+        }catch (\Exception $e){
+            throw new \Exception("Erro na gravação de dados.".$e->getMessage(), 500);
+        }
+    }
+
+    public function criarContaPorTipo(Conta $conta)
+    {
+        try {
+
+            if($conta instanceof ContaCorrente){
+                $nome_tabela = "conta_corrente";
+            }elseif($conta instanceof ContaPoupanca){
+                $nome_tabela = "conta_poupanca";
+            }
+                                     
+            return $this->insert(
+                $nome_tabela,
+                ":conta_id",
+                [
+                    ':conta_id'=>$conta->getId()
                 ]
             );
 
@@ -81,7 +105,8 @@ class ContaDAO extends BaseDAO
         }
     }
 
-    public  function atualizarSaldoRend(Conta $conta) {
+    public  function atualizarSaldoRend(Conta $conta) 
+    {
         try {
             $titular = $conta->getTitular();
             $saldo   = $conta->getSaldo();
@@ -91,8 +116,8 @@ class ContaDAO extends BaseDAO
                 'conta',
                 "saldo = :saldo, data_rendimento = :data_rendimento",
                 [
-                    ':titular'=>$titular,
-                    ':saldo'  =>$saldo,
+                    ':titular'         =>$titular,
+                    ':saldo'           =>$saldo,
                     ':data_rendimento' =>$data_rendimento
                 ]
             );
@@ -102,22 +127,38 @@ class ContaDAO extends BaseDAO
         }
     }
 
-    public  function atualizarSaldoEspecial(Conta $conta) {
+    public  function atualizarSaldoEspecial(ContaCorrente $conta) 
+    {
         try {
-            $titular = $conta->getTitular();
-            $limite_espacial   = $conta->getLimite_especial();
+            $conta_id          = $conta->getConta_Id();
+            $limite_especial   = $conta->getLimite_Especial();
 
-            return $this->update(
-                'conta',
-                "limite_especial = :limite_especial",
+            return $this->updateContaCorrente(
+                'conta_corrente',
+                'limite_especial = :limite_especial',
                 [
-                    ':titular'=>$titular,
-                    ':limite_especial'  =>$limite_espacial
+                    ':conta_id'        =>$conta_id,
+                    ':limite_especial' =>$limite_especial
                 ]
             );
 
         }catch (\Exception $e){
             throw new \Exception("Erro na gravação de dados.".$e->getMessage(), 500);
+        }
+    }
+
+    public function pegarContaCorrente($conta)
+    {
+        try {
+
+            $query = $this->select(
+                "SELECT * FROM conta_corrente WHERE conta_id = '$conta'"
+            );
+
+            return $query->fetch();
+
+        }catch (Exception $e){
+            throw new \Exception("Erro no acesso aos dados.", 500);
         }
     }
 }

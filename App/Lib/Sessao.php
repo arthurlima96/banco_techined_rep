@@ -21,7 +21,14 @@ class Sessao{
     }
 
     public static function retornaTipo(){
-        return ($_SESSION['tipo']) ? $_SESSION['tipo'] : "";
+        switch ($_SESSION['tipo']) {
+            case 1:
+                return "Conta Corrente";
+               
+            case 2:
+                return "Conta Poupança";
+                       
+        }
     }
 
     public static function gravaNumero($numero){

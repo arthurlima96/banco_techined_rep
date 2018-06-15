@@ -24,8 +24,8 @@
                 <div class="form-group">
                     <label for="tp_conta">Tipo de Conta</label>
                     <select class="form-control" id="tp_conta" name="tp_conta">
-                    <option>Conta Corrente</option>
-                    <option>Conta Poupança</option>
+                        <option value="1">Conta Corrente</option>
+                        <option value="2">Conta Poupança</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success btn-sm">Salvar</button>

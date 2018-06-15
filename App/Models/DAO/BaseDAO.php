@@ -52,4 +52,18 @@ abstract class BaseDAO
             return false;
         }
     }
+
+    public function updateContaCorrente($table, $cols, $values) 
+    {
+        if(!empty($table) && !empty($cols) && !empty($values))
+        {
+            
+            $stmt = $this->conexao->prepare("UPDATE $table SET $cols WHERE conta_id = :conta_id");
+            $stmt->execute($values);
+
+            return $stmt->rowCount();
+        }else{
+            return false;
+        }
+    }
 }
